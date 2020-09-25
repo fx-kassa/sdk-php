@@ -1,0 +1,16 @@
+.DS_Store
+.buildpath
+.project
+.settings
+.idea
+*.tgz
+dist
+*.phar
+composer.lock
+tests/log
+./db
+./migrations
+docs/_build
+vendor
+phpunit.xml
+phinx_testing.sqlite3

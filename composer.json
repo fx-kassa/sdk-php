@@ -1,0 +1,22 @@
+{
+    "name": "flamix/kassa",
+    "description": "Official PHP SDK for FLAMIX.KASSA",
+    "type": "library",
+    "authors": [{
+        "name": "Roman Shkabko",
+        "email": "r.shkabko@flamix.email",
+        "homepage": "https://flamix.info/"
+    }],
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "require": {
+        "guzzlehttp/guzzle": "^7.1",
+        "php": ">=7.6",
+        "ext-json": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Flamix\\Kassa\\": "src/"
+        }
+    }
+}
