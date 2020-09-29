@@ -2,41 +2,81 @@
 
 namespace Flamix\Kassa;
 
+use Flamix\Kassa\Actions\Recurrent;
 use \GuzzleHttp\Client as Http,
-    \Exception;
+    \Exception,
+    Flamix\Kassa\Actions\Payments;
 
 class API
 {
-    const API_URL = 'https://kassa.flamix.solutions/api';
+    use Payments;
+    use Recurrent;
 
-    private $headers = array();
-    private $publick_key;
-    private $secret_key;
+    private $api_domain = 'https://kassa.flamix.solutions/api/cashbox/',
+            $headers    = array(),
+            $query      = array(),
+            $publick_key,
+            $secret_key;
 
     public function __construct( string $publick_key, string $secret_key = '' )
     {
-        $this->$publick_key = $publick_key;
-        $this->$secret_key  = $secret_key;
+        $this->publick_key = $publick_key;
+        $this->secret_key  = $secret_key;
     }
 
-    private function getHeaders()
+    /**
+     * Return array of Headers prepared to GUZZLE request
+     *
+     * @return array
+     */
+    public function getHeaders()
     {
-        return $this->$headers;
+        $header = array();
+        if(!empty($this->headers))
+            $header['headers'] = $this->headers;
+
+        if(!empty($this->query))
+            $header['query'] = $this->query;
+
+        return $header;
     }
 
-    private function setHeader( string $name, $value )
+    /**
+     * @param string $name
+     * @param $value
+     */
+    public function setHeader( string $name, $value )
     {
-        $this->$headers[$name] = $value;
+        $this->headers[$name] = $value;
     }
 
-    private function setBearerHeader()
+    /**
+     * @param string $name
+     * @param $value
+     */
+    public function setQuery( string $name, $value )
     {
-        $bearer = 'Bearer ' . $this->$publick_key;
+        $this->query[$name] = $value;
+    }
 
-        if(!empty($this->$secret_key))
-            $bearer .= ':' . $this->$secret_key;
+    /**
+     * Set Bearer auth token (if need)
+     */
+    public function setBearerHeader()
+    {
+        if(!empty($this->secret_key))
+            $this->setHeader('Authorization', 'Bearer ' . $this->secret_key);
+    }
 
-        $this->setHeader('Authorization', $bearer);
+    /**
+     * Create URL to send request
+     *
+     * @param $url
+     * @return string
+     */
+    public function getURL( $url )
+    {
+        return $this->publick_key . '/' . $url;
     }
 
     /**
@@ -49,15 +89,25 @@ class API
      */
     public function exec( string $url, string $type = 'GET' )
     {
-        $http = new Http(['base_uri' => self::API_URL]);
+        $http = new Http(['base_uri' => self::$api_domain]);
         $this->setBearerHeader();
 
-        if(empty($this->getHeaders()))
-            throw new Exception('Bad headers!');
+        $responce = $http->request( $type, $this->getURL($url), $this->getHeaders());
 
-        $headers = $this->getHeaders();
+        if($responce->getStatusCode() != '200')
+            throw new Exception('API is not available!');
 
-        $responce = $http->request( $type, $url, array( 'headers' => $headers ));
-        return $responce->getBody();
+        if($responce->getHeaderLine('Content-Type') != 'application/json')
+            throw new Exception('API must return JSON!');
+
+        $json = json_decode($responce->getBody()->getContents(), true);
+
+        if(json_last_error())
+            throw new Exception('Bad JSON format');
+
+        if(!$json['success'])
+            throw new Exception($json['message']);
+
+        return $json;
     }
 }
