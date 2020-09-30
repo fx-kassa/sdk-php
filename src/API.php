@@ -15,13 +15,13 @@ class API
     private $api_domain = 'https://kassa.flamix.solutions/api/cashbox/',
             $headers    = array(),
             $query      = array(),
-            $publick_key,
+            $public_key,
             $secret_key;
 
-    public function __construct( string $publick_key, string $secret_key = '' )
+    public function __construct( string $public_key, string $secret_key = '' )
     {
-        $this->publick_key = $publick_key;
-        $this->secret_key  = $secret_key;
+        $this->public_key = $public_key;
+        $this->secret_key = $secret_key;
     }
 
     /**
@@ -76,7 +76,7 @@ class API
      */
     public function getURL( $url )
     {
-        return $this->publick_key . '/' . $url;
+        return $this->public_key . '/' . $url;
     }
 
     /**
