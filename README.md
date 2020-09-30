@@ -1,5 +1,29 @@
 ## FLAMIX.KASSA SDK EXAMPLES
 
+### Check payments
+```php
+
+try {
+    $kassa = new \Flamix\Kassa\API( 'id', 'key' );
+    
+    //Check
+    if(!$kassa->isPaymentSuccess($_POST))
+        exit();
+    
+    //If OK, you can use (all variables you can check in vendors/flamix/kassa/Actions/Check.php)
+    $kassa->amount;
+    $kassa->cashbox_currency;
+    $kassa->order_id;
+    $kassa->custom_info;
+} catch (Exception $e) {
+  echo $e->getMessage();
+  exit();
+}
+
+```
+
+### Work with Cashbox
+
 ```php
 
 try {
@@ -14,7 +38,7 @@ try {
     //Get URL to link, qr or form
     $kassa->setAmount(11)->setCurrency('USD')->setPaymentType(11)->getPaymentRequest();
 } catch (Exception $e) {
-  echo $e->getMessage();
+    echo $e->getMessage();
 }
 
 ```
@@ -39,7 +63,7 @@ try {
     $kassa->setCustomInfo('u4')->deleteReccurentPayment()
 
 } catch (Exception $e) {
-  echo $e->getMessage();
+    echo $e->getMessage();
 }
 
 ```
