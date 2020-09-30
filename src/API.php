@@ -24,6 +24,17 @@ class API
         $this->secret_key = $secret_key;
     }
 
+    public function getDomain()
+    {
+        return $this->api_domain;
+    }
+
+    public function changeDomain( string $new_domain )
+    {
+        $this->api_domain = $new_domain;
+        return $this;
+    }
+
     /**
      * Return array of Headers prepared to GUZZLE request
      *
