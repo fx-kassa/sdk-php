@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+../../bin/phpunit
+-->
+<phpunit
+        colors="true"
+        bootstrap="../../autoload.php"
+        beStrictAboutTestsThatDoNotTestAnything="true"
+>
+    <php>
+        <ini name="error_reporting" value="-1" />
+        <env name="FLAMIX_KASSA_TEST_URL" value="https://proxy-payment.demo.flamix.info/api/cashbox/"/>
+        <env name="FLAMIX_KASSA_PUBLIC_KEY" value="TEST_PUBLIC_KEY"/>
+        <env name="FLAMIX_KASSA_SECRET_KEY" value="TEST_SECRET_KEY"/>
+    </php>
+
+    <testsuites>
+        <testsuite name="Flamix Kassa">
+            <directory suffix=".php">tests</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
