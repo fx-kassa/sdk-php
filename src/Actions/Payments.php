@@ -6,10 +6,7 @@ use \Exception;
 
 trait Payments
 {
-    private $amount,
-            $currency,
-            $order_id,
-            $custom_info,
+    private $currency,
             $type = 'link';
 
     /**
