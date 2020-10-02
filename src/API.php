@@ -100,7 +100,7 @@ class API
      */
     public function exec( string $url, string $type = 'GET' )
     {
-        $http = new Http(['base_uri' => self::$api_domain]);
+        $http = new Http(['base_uri' => $this->$api_domain]);
         $this->setBearerHeader();
 
         $responce = $http->request( $type, $this->getURL($url), $this->getHeaders());
