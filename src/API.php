@@ -2,26 +2,34 @@
 
 namespace Flamix\Kassa;
 
-use Flamix\Kassa\Actions\Recurrent;
-use \GuzzleHttp\Client as Http,
-    \Exception,
-    Flamix\Kassa\Actions\Payments;
+use Flamix\Kassa\Actions\{Recurrent, Payments, Check};
+use \GuzzleHttp\Client as Http;
+use \Exception;
 
 class API
 {
+    use Check;
     use Payments;
     use Recurrent;
 
-    private $api_domain = 'https://kassa.flamix.solutions/api/cashbox/',
-            $headers    = array(),
-            $query      = array(),
-            $public_key,
-            $secret_key;
+    private $order_id = '';
 
-    public function __construct( string $public_key, string $secret_key = '' )
+    private $amount = 0;
+
+    private $custom_info = '';
+
+    private $api_domain = 'https://kassa.flamix.solutions/api/cashbox/',
+            $headers    = [],
+            $query      = [],
+            $cashbox_code,
+            $api_key;
+
+    public function __construct( string $cashbox_code, string $api_key = '' )
     {
-        $this->public_key = $public_key;
+        $this->cashbox_code = $cashbox_code;
         $this->secret_key = $secret_key;
+        $this->test_secret_key = $test_secret_key;
+        $this->api_key = $api_key;
     }
 
     public function getDomain()
@@ -75,8 +83,8 @@ class API
      */
     public function setBearerHeader()
     {
-        if(!empty($this->secret_key))
-            $this->setHeader('Authorization', 'Bearer ' . $this->secret_key);
+        if(!empty($this->api_key))
+            $this->setHeader('Authorization', 'Bearer ' . $this->api_key);
     }
 
     /**
@@ -87,7 +95,7 @@ class API
      */
     public function getURL( $url )
     {
-        return $this->public_key . '/' . $url;
+        return $this->cashbox_code . '/' . $url;
     }
 
     /**
@@ -100,7 +108,8 @@ class API
      */
     public function exec( string $url, string $type = 'GET' )
     {
-        $http = new Http(['base_uri' => $this->$api_domain]);
+        $http = new Http(['base_uri' => $this->getDomain()]);
+
         $this->setBearerHeader();
 
         $responce = $http->request( $type, $this->getURL($url), $this->getHeaders());
