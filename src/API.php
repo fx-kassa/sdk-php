@@ -27,8 +27,6 @@ class API
     public function __construct( string $cashbox_code, string $api_key = '' )
     {
         $this->cashbox_code = $cashbox_code;
-        $this->secret_key = $secret_key;
-        $this->test_secret_key = $test_secret_key;
         $this->api_key = $api_key;
     }
 
