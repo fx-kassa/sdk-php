@@ -13,18 +13,32 @@ class APITest extends \PHPUnit\Framework\TestCase
     protected $id,
               $url,
               $key,
+              $secret,
               $kassa;
 
     protected function setUP(): void
     {
         parent::setUP();
 
-        $this->id   = getenv('FLAMIX_KASSA_PUBLIC_KEY');
-        $this->key  = getenv('FLAMIX_KASSA_SECRET_KEY');
+        $this->id       = getenv('FLAMIX_KASSA_PUBLIC_KEY');
+        $this->key      = getenv('FLAMIX_KASSA_API_KEY');
+        $this->secret   = getenv('FLAMIX_KASSA_SECRET_KEY');
 
-        $this->url  = getenv('FLAMIX_KASSA_TEST_URL');
+        $this->url      = getenv('FLAMIX_KASSA_TEST_URL');
 
-        $this->kassa= new API($this->id, $this->key);
+        $this->kassa    = new API($this->id, $this->key);
+    }
+
+    /**
+     * Test PING
+     */
+    public function testPingApiSites()
+    {
+        exec('ping -c 2 pay.flamix.solutions', $output, $status);
+        $this->assertFalse((bool) $status, 'API site doesnt responce');
+
+        exec('ping -c 2 kassa.flamix.solutions', $output, $status);
+        $this->assertFalse((bool) $status, 'MAIN site doesnt responce');
     }
 
     /**

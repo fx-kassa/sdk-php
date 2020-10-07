@@ -11,6 +11,7 @@
         <ini name="error_reporting" value="-1" />
         <env name="FLAMIX_KASSA_TEST_URL" value="https://proxy-payment.demo.flamix.info/api/cashbox/"/>
         <env name="FLAMIX_KASSA_PUBLIC_KEY" value="TEST_PUBLIC_KEY"/>
+        <env name="FLAMIX_KASSA_API_KEY" value="TEST_API_KEY"/>
         <env name="FLAMIX_KASSA_SECRET_KEY" value="TEST_SECRET_KEY"/>
     </php>
 
