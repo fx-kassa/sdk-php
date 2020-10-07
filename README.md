@@ -4,10 +4,10 @@
 ```php
 
 try {
-    $kassa = new \Flamix\Kassa\API( 'id', 'key' );
+    $kassa = new \Flamix\Kassa\API( 'cashbox_public_id' );
     
     //Check
-    if(!$kassa->isPaymentSuccess($_POST))
+    if(!$kassa->setSecretKey('cash_box_secretecode_REQUIRED')->setTestSecretKey('cash_box_TEST_secretecode_NOT_required')->isPaymentSuccess($_POST))
         exit();
     
     //If OK, you can use (all variables you can check in vendors/flamix/kassa/Actions/Check.php)
@@ -16,8 +16,8 @@ try {
     $kassa->order_id;
     $kassa->custom_info;
 } catch (Exception $e) {
-  echo $e->getMessage();
-  exit();
+    echo $e->getMessage();
+    exit();
 }
 
 ```
@@ -27,7 +27,7 @@ try {
 ```php
 
 try {
-    $kassa = new \Flamix\Kassa\API( 'id', 'key' );
+    $kassa = new \Flamix\Kassa\API( 'cashbox_public_id', 'account_api_key' );
     
     //Manual
     $kassa->exec('getPayments');
@@ -35,8 +35,8 @@ try {
     //Get all Payments Systems
     $kassa->getCashboxPaymentSystems();
     
-    //Get URL to link, qr or form
-    $kassa->setAmount(11)->setCurrency('USD')->setPaymentType(11)->getPaymentRequest();
+    //Get URL to link (default), qr or form
+    $kassa->setAmount(11)->setCurrency('USD')->setPaymentType('form')->getPaymentRequest();
 } catch (Exception $e) {
     echo $e->getMessage();
 }
@@ -48,7 +48,7 @@ try {
 ```php
 
 try {
-    $kassa = new \Flamix\Kassa\API( 'id', 'key' );
+    $kassa = new \Flamix\Kassa\API( 'cashbox_public_id', 'account_api_key' );
     
     //Find Reccurent by musk
     $kassa->setCustomInfo('4')->findReccurentPayment();
