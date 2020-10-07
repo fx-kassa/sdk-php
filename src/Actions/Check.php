@@ -74,19 +74,22 @@ trait Check
         if(empty($this->secret_key))
             throw new Exception('Secret key cant be empty!');
 
-        $finalSecretKey = $requestData['payment_code'] === 'test' ? $this->test_secret_key : $this->secret_key;
+        if($requestData['payment_code'] === 'test' && !empty($this->test_secret_key))
+            $finalSecretKey = $this->test_secret_key;
+        else
+            $finalSecretKey = $this->secret_key;
 
         $string = $request['cashbox_code'] . '&' . 
-                 $request['order_id'] . '&' . 
-                 $request['transaction_id'] . '&' . 
-                 $request['request_amount'] . '&' . 
-                 $request['amount'] . '&' . 
-                 $request['contact'] . '&' . 
-                 $request['payment_code'] . '&' . 
-                 $request['cashbox_currency'] . '&' . 
-                 $request['payment_currency'] . '&' . 
-                 $request['custom_info'] . '&' .
-                 $finalSecretKey;
+                  $request['order_id'] . '&' .
+                  $request['transaction_id'] . '&' .
+                  $request['request_amount'] . '&' .
+                  $request['amount'] . '&' .
+                  $request['contact'] . '&' .
+                  $request['payment_code'] . '&' .
+                  $request['cashbox_currency'] . '&' .
+                  $request['payment_currency'] . '&' .
+                  $request['custom_info'] . '&' .
+                  $finalSecretKey;
 
         return hash('sha256', $string );
     }
