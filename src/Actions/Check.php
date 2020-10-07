@@ -49,15 +49,15 @@ trait Check
 
         $this->amount           = (float) $request['amount'];
         $this->request_amount   = (float) $request['request_amount'];
-        $this->cashbox_currency = mysqli_real_escape_string($request['cashbox_currency']);
-        $this->payment_currency = mysqli_real_escape_string($request['payment_currency']);
+        $this->cashbox_currency = @mysqli_real_escape_string($request['cashbox_currency']);
+        $this->payment_currency = @mysqli_real_escape_string($request['payment_currency']);
 
         $this->transaction_id   = (int) $request['transaction_id'];
-        $this->order_id         = mysqli_real_escape_string($request['order_id']);
-        $this->custom_info      = mysqli_real_escape_string($request['custom_info']);
+        $this->order_id         = @mysqli_real_escape_string($request['order_id']);
+        $this->custom_info      = @mysqli_real_escape_string($request['custom_info']);
 
-        $this->cashbox_code     = mysqli_real_escape_string($request['cashbox_code']);
-        $this->contact          = mysqli_real_escape_string($request['contact']);
+        $this->cashbox_code     = @mysqli_real_escape_string($request['cashbox_code']);
+        $this->contact          = @mysqli_real_escape_string($request['contact']);
         
         return true;
     }
@@ -74,7 +74,7 @@ trait Check
         if(empty($this->secret_key))
             throw new Exception('Secret key cant be empty!');
 
-        if($requestData['payment_code'] === 'test' && !empty($this->test_secret_key))
+        if($request['payment_code'] === 'test' && !empty($this->test_secret_key))
             $finalSecretKey = $this->test_secret_key;
         else
             $finalSecretKey = $this->secret_key;

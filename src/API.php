@@ -12,11 +12,9 @@ class API
     use Payments;
     use Recurrent;
 
-    private $order_id = '';
-
-    private $amount = 0;
-
-    private $custom_info = '';
+    public  $order_id   = '',
+            $amount     = 0,
+            $custom_info= '';
 
     private $api_domain = 'https://kassa.flamix.solutions/api/cashbox/',
             $headers    = [],
