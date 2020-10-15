@@ -48,6 +48,8 @@ class APITest extends \PHPUnit\Framework\TestCase
      * @covers \Flamix\Kassa\API::getHeaders()
      * @covers \Flamix\Kassa\API::setQuery()
      * @covers \Flamix\Kassa\API::setHeader()
+     * @covers \Flamix\Kassa\API::setFormParams()
+     * @covers \Flamix\Kassa\API::setMultipart()
      */
     public function testHeaders()
     {
@@ -68,6 +70,35 @@ class APITest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Test Headers Multipart
+     *
+     * @test
+     * @covers \Flamix\Kassa\API::setMultipart()
+     */
+    public function testMultipartHeader()
+    {
+        $kassa = new API($this->id, $this->key);
+
+        $this->kassa->setMultipart('test', 'Y');
+        $result = $this->kassa->getHeaders();
+        $expected = [
+            'name' => 'test',
+            'contents' => 'Y'
+        ];
+        $this->assertTrue($expected === $result['multipart'][0]);
+
+
+        $this->kassa->setMultipart('logo_file_path', '/path/to/file/file.jpg', 'file.jpg');
+        $result = $this->kassa->getHeaders();
+        $expected = [
+            'name' => 'logo_file_path',
+            'contents' => '/path/to/file/file.jpg',
+            'filename' => 'file.jpg'
+        ];
+        $this->assertTrue($expected === $result['multipart'][1]);
+    }
+
+    /**
      * @test URL
      *
      * @covers \Flamix\Kassa\API::getDomain()
@@ -78,15 +109,15 @@ class APITest extends \PHPUnit\Framework\TestCase
     {
         $kassa = new API($this->id, $this->key);
 
-        $this->assertEquals($kassa->getDomain(), 'https://kassa.flamix.solutions/api/cashbox/');
-        $headers = @get_headers($kassa->getDomain() . $kassa->getURL('getPayments'));
+        $this->assertEquals($kassa->getDomain(), 'https://cp.kassa.flamix.solutions/api/cashbox/');
+        $headers = @get_headers($kassa->getDomain() . $kassa->getURL('/getPayments'));
         $this->assertEquals($headers['0'], 'HTTP/1.1 200 OK', 'MAIN DOMAIN NOT AVAILABLE');
 
         //TEST domanin
         $kassa->changeDomain($this->url);
         $this->assertEquals($kassa->getDomain(), $this->url);
 
-        $headers = @get_headers($kassa->getDomain() . $kassa->getURL('getPayments'));
+        $headers = @get_headers($kassa->getDomain() . $kassa->getURL('/getPayments'));
         $this->assertEquals($headers['0'], 'HTTP/1.1 200 OK', 'TEST DOMAIN NOT AVAILABLE');
     }
 }

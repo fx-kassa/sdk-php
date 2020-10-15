@@ -2,12 +2,13 @@
 
 namespace Flamix\Kassa;
 
-use Flamix\Kassa\Actions\{Recurrent, Payments, Check};
+use Flamix\Kassa\Actions\{Cashbox, Recurrent, Payments, Check};
 use \GuzzleHttp\Client as Http;
 use \Exception;
 
 class API
 {
+    use Cashbox;
     use Check;
     use Payments;
     use Recurrent;
@@ -16,7 +17,11 @@ class API
             $amount     = 0,
             $custom_info= '';
 
-    private $api_domain = 'https://kassa.flamix.solutions/api/cashbox/',
+    private $form_params = [];
+
+    private $multipart = [];
+
+    private $api_domain = 'https://cp.kassa.flamix.solutions/api/cashbox/',
             $headers    = [],
             $query      = [],
             $cashbox_code,
@@ -53,6 +58,12 @@ class API
         if(!empty($this->query))
             $header['query'] = $this->query;
 
+        if(!empty($this->form_params))
+            $header['form_params'] = $this->form_params;
+
+        if(!empty($this->multipart))
+            $header['multipart'] = $this->multipart;
+
         return $header;
     }
 
@@ -75,6 +86,35 @@ class API
     }
 
     /**
+     * @param array $form_params
+     */
+    public function setFormParams( array $form_params)
+    {
+        $this->form_params = $form_params;
+    }
+
+    /**
+     * Attach file to request
+     *
+     * @param string $name
+     * @param string $file_name
+     * @param $content
+     * @return void
+     */
+    public function setMultipart( string $name, $content, string $file_name = '')
+    {
+        $param = [
+            'name'     => $name,
+            'contents' => $content
+        ];
+        if ($file_name !== '') {
+            $param['filename'] = $file_name;
+        }
+
+        $this->multipart[] = $param;
+    }
+
+    /**
      * Set Bearer auth token (if need)
      */
     public function setBearerHeader()
@@ -91,7 +131,10 @@ class API
      */
     public function getURL( $url )
     {
-        return $this->cashbox_code . '/' . $url;
+        if ($url === '/') {
+            $url = '';
+        }
+        return $this->cashbox_code . $url;
     }
 
     /**

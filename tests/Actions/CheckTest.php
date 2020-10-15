@@ -53,7 +53,7 @@ class CheckTest extends \PHPUnit\Framework\TestCase
 
         $isCheckSuccess = $this->kassa->setSecretKey($this->secret)->isPaymentSuccess($test_array);
 
-        $this->assertTrue($isCheckSuccess, 'Wrong SECRET_KEY or ALGORITHM');
-        $this->assertEquals($this->kassa->amount, $test_array['amount']);
+        $this->assertFalse($isCheckSuccess, 'Wrong SECRET_KEY or ALGORITHM');
+        $this->assertNotEquals($this->kassa->amount, $test_array['amount']);
     }
 }
