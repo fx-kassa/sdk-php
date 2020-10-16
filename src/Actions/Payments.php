@@ -7,7 +7,8 @@ use \Exception;
 trait Payments
 {
     private $currency,
-            $type = 'link';
+            $type = 'link',
+            $items = '';
 
     /**
      * Get all avaibel Payment method on Cashbox
@@ -17,9 +18,9 @@ trait Payments
      */
     public function getCashboxPaymentSystems()
     {
-        $responce = $this->exec('getPayments');
+        $response = $this->exec('/getPayments');
 
-        return (!empty($responce['paymentSystems']))? $responce['paymentSystems'] : false;
+        return (!empty($response['paymentSystems']))? $response['paymentSystems'] : false;
     }
 
     /**
@@ -48,9 +49,17 @@ trait Payments
         if($this->custom_info)
             $this->setQuery('custom_info', $this->custom_info);
 
-        $responce = $this->exec('getPaymentRequest', 'POST');
+        if($this->items) {
+            $itemsForUrl = http_build_query(['items' => $this->items]);
+        }
 
-        return (!empty($responce['response']))? $responce['response'] : false;
+        $response = $this->exec('/getPaymentRequest', 'POST');
+
+        if (empty($response['response'])) {
+            return false;
+        }
+
+        return $response['response'] . (($this->items !== '') ? '&' . $itemsForUrl : '');
     }
 
     /**
@@ -109,6 +118,17 @@ trait Payments
     public function setCustomInfo( string $custom_info )
     {
         $this->custom_info = $custom_info;
+        return $this;
+    }
+
+    /**
+     * Set order items if needed
+     * @param string $customInfo
+     * @return $this
+     */
+    public function setItems( array $items )
+    {
+        $this->items = $items;
         return $this;
     }
 }
