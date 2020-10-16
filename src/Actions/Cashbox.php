@@ -2,6 +2,8 @@
 
 namespace Flamix\Kassa\Actions;
 
+use Exception;
+
 
 /**
  * Trait Cashbox for working with cashbox API
@@ -14,17 +16,26 @@ trait Cashbox
      */
     public function getCashBox()
     {
-        $response = $this->exec('/', 'GET');
+        try {
+            $response = $this->exec('/', 'GET');
+        } catch (Exception $e) {
+            return ['error' => $e->getMessage()];
+        }
 
         return (!empty($response['response']))? $response['response'] : false;
     }
 
     /**
-     * @return bool
+     * @return bool|array
      */
-    public function deleteCashBox(): bool
+    public function deleteCashBox()
     {
-        $this->exec('/', 'DELETE');
+
+        try {
+            $this->exec('/', 'DELETE');
+        } catch (Exception $e) {
+            return ['error' => $e->getMessage()];
+        }
 
         return true;
     }
@@ -37,7 +48,11 @@ trait Cashbox
     {
         $this->preparePostData($data);
 
-        $response = $this->exec('/', 'POST');
+        try {
+            $response = $this->exec('/', 'POST');
+        } catch (Exception $e) {
+            return ['error' => $e->getMessage()];
+        }
 
         return (!empty($response['response']))? $response['response'] : false;
     }
