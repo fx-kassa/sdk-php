@@ -50,6 +50,8 @@ try {
 try {
     $kassa = new \Flamix\Kassa\API( 'cashbox_public_id', 'account_api_key' );
     
+    $kassa->setSecretKey('cashbox_secret_code');
+    
     //Find Reccurent by musk
     $kassa->setCustomInfo('4')->findReccurentPayment();
     
@@ -60,7 +62,7 @@ try {
     $kassa->setPaymentId('0-0-0-0-0-0')->setAmount(5)->setCurrency('UAH')->doReccurentPayment();
     
     //Delete by musk
-    $kassa->setCustomInfo('u4')->deleteReccurentPayment()
+    $kassa->setCustomInfo('u4')->deleteReccurentPayment();
 
 } catch (Exception $e) {
     echo $e->getMessage();

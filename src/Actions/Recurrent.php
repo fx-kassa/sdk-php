@@ -26,7 +26,7 @@ trait Recurrent
         if($this->custom_info)
             $this->setQuery('custom_info', $this->custom_info);
 
-        $responce = $this->exec('findSavedMethod', 'POST');
+        $responce = $this->exec('/findSavedMethod', 'POST');
 
         return (!empty($responce['response']))? $responce['response'] : false;
     }
@@ -68,7 +68,7 @@ trait Recurrent
         else
             throw new Exception('Bad CURRENCY, use setCurrency() method!');
 
-        $responce = $this->exec('createAutoTransaction', 'POST');
+        $responce = $this->exec('/createAutoTransaction', 'POST');
 
         return $responce;
     }
@@ -93,7 +93,7 @@ trait Recurrent
         if($this->custom_info)
             $this->setQuery('custom_info', $this->custom_info);
 
-        $responce = $this->exec('deleteSavedMethod', 'DELETE');
+        $responce = $this->exec('/deleteSavedMethod', 'DELETE');
 
         return $responce;
     }
