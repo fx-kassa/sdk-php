@@ -36,7 +36,8 @@ trait Payments
         if($this->amount)
             $this->setQuery('amount', $this->amount);
         else
-            throw new Exception('Bad SUM, use setAmount() method!');
+            if($this->type != 'widget')
+                throw new Exception('Bad SUM, use setAmount() method!');
 
         if($this->currency)
             $this->setQuery('currency', $this->currency);
