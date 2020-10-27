@@ -17,7 +17,7 @@ trait Cashbox
     public function getCashBox()
     {
         try {
-            $response = $this->exec('/', 'GET');
+            $response = $this->exec('/action/show', 'GET');
         } catch (Exception $e) {
             return ['error' => $e->getMessage()];
         }
@@ -32,7 +32,7 @@ trait Cashbox
     {
 
         try {
-            $this->exec('/', 'DELETE');
+            $this->exec('/action/delete', 'DELETE');
         } catch (Exception $e) {
             return ['error' => $e->getMessage()];
         }
@@ -49,7 +49,7 @@ trait Cashbox
         $this->preparePostData($data);
 
         try {
-            $response = $this->exec('/', 'POST');
+            $response = $this->exec('/action/update', 'POST');
         } catch (Exception $e) {
             return ['error' => $e->getMessage()];
         }
